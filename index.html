@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Literal Robot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@700;800&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <button class="brand" id="brand" type="button" data-go="home" aria-label="Literal Robot, home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Literal Robot</span>
+    </button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <button type="button" data-go="map" data-i18n="nav.play">Play</button>
+      <button type="button" data-go="daily" data-i18n="nav.daily">Bug of the Day</button>
+      <button type="button" data-go="sandbox" data-i18n="nav.sandbox">Sandbox</button>
+      <button type="button" data-go="gallery" data-i18n="nav.gallery">Collection</button>
+      <button type="button" data-go="create" data-i18n="nav.create">Create</button>
+    </nav>
+    <div class="tools">
+      <button class="chip" id="soundBtn" type="button" aria-pressed="true"><span data-i18n="sound.on">Sound on</span></button>
+      <label class="chip sel"><span class="sr" data-i18n="lang.label">Language</span>
+        <select id="lang"><option value="en">English</option><option value="es">Espa&ntilde;ol</option></select>
+      </label>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= HOME ================= -->
+    <section class="screen" id="screen-home" data-screen="home">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow" data-i18n="home.eyebrow">A puzzle game for careful thinkers</p>
+          <h1>Literal Robot</h1>
+          <p class="lead" data-i18n="home.tag">Give the robot instructions in plain words. It does exactly what you wrote, and nothing else.</p>
+          <div class="row">
+            <button class="btn primary big" id="beginBtn" type="button" data-i18n="home.begin">Let's begin</button>
+            <button class="btn big" id="freeBtn" type="button" data-i18n="home.free">Free play</button>
+          </div>
+          <form class="poke" id="pokeForm" autocomplete="off">
+            <label class="lbl" for="pokeIn" data-i18n="home.pokeLabel">Or say one word to the robot first</label>
+            <div class="poke-row">
+              <input id="pokeIn" type="text" maxlength="24" data-i18n-ph="home.pokePh" placeholder="try: jump">
+              <button class="btn" type="submit" data-i18n="home.pokeBtn">Say it</button>
+            </div>
+          </form>
+        </div>
+        <div class="hero-scene card scene">
+          <canvas id="heroCanvas" width="1280" height="940" role="img" data-i18n-aria="home.canvasAria" aria-label="A small yellow robot in a room, waking up."></canvas>
+          <div class="bubble" id="heroBubble" role="status" aria-live="polite">
+            <span class="who" id="heroWho">Robot</span>
+            <p id="heroMsg"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tiles">
+        <article class="card tile" id="dailyTile">
+          <p class="eyebrow" id="dailyEyebrow"></p>
+          <h2 id="dailyTitle"></h2>
+          <p class="muted" id="dailyStreak"></p>
+          <div class="attempts" id="dailyAttempts" aria-hidden="true"></div>
+          <button class="btn primary" id="dailyBtn" type="button" data-go="daily"></button>
+        </article>
+        <article class="card tile">
+          <h2 data-i18n="home.robotTitle">Your robot</h2>
+          <label class="lbl" for="nameIn" data-i18n="home.nameLabel">Name</label>
+          <input id="nameIn" type="text" maxlength="14" autocomplete="off">
+          <p class="lbl" id="colorLbl" data-i18n="home.colorLabel">Color</p>
+          <div class="swatches" id="swatches" role="radiogroup" aria-labelledby="colorLbl"></div>
+        </article>
+        <article class="card tile">
+          <h2 data-i18n="home.collectionTitle">Collection</h2>
+          <p class="muted" id="collectionSummary"></p>
+          <button class="btn" type="button" data-go="gallery" data-i18n="home.openCollection">Open collection</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= MAP ================= -->
+    <section class="screen" id="screen-map" data-screen="map" hidden>
+      <h1 class="h1s" data-i18n="map.title">Choose a level</h1>
+      <p class="lead" data-i18n="map.sub">Finish a level to open the next one. Fewer lines earns more stars.</p>
+      <div class="map" id="map">
+        <svg viewBox="0 0 800 440" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M80 308 C 150 308, 160 123, 224 123 S 310 290, 376 290 S 460 114, 528 114 S 640 273, 704 273" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round" stroke-dasharray="2 18"/>
+        </svg>
+      </div>
+      <div class="row">
+        <button class="btn" type="button" data-go="sandbox" data-i18n="nav.sandbox">Sandbox</button>
+        <button class="btn" type="button" data-go="daily" data-i18n="nav.daily">Bug of the Day</button>
+        <button class="btn" type="button" data-go="create" data-i18n="map.build">Build your own level</button>
+      </div>
+    </section>
+
+    <!-- ================= GAME ================= -->
+    <section class="screen" id="screen-game" data-screen="game" hidden>
+      <div class="gamebar">
+        <button class="btn ghost small" id="backBtn" type="button" data-i18n="game.back">Back to levels</button>
+        <p class="mode" id="modeBanner" hidden></p>
+      </div>
+      <div class="stage">
+        <section class="card scene" aria-label="Robot's room">
+          <canvas id="canvas" width="1280" height="940" role="img" aria-label="Isometric room with a yellow robot."></canvas>
+          <div class="bubble" id="bubble" role="status" aria-live="polite">
+            <span class="who" id="who">Robot</span>
+            <p id="msg"></p>
+          </div>
+        </section>
+
+        <div class="side">
+          <section class="card">
+            <p class="eyebrow" id="lvLabel"></p>
+            <h2 id="jobTitle"></h2>
+            <p id="goalText" class="muted"></p>
+            <p class="challenge" id="challengeBanner" hidden></p>
+          </section>
+
+          <section class="card">
+            <div class="prog-head">
+              <span class="lbl" id="instrLbl" data-i18n="game.instructions">Instructions</span>
+              <div class="tabs" role="tablist" aria-label="Editor mode">
+                <button type="button" role="tab" id="tabType" aria-selected="true" data-i18n="game.tabType">Type</button>
+                <button type="button" role="tab" id="tabBlocks" aria-selected="false" data-i18n="game.tabBlocks">Blocks</button>
+              </div>
+            </div>
+
+            <div id="typePane">
+              <div class="editor">
+                <div class="gutter" id="gutter" aria-hidden="true"></div>
+                <textarea id="ta" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" rows="8" aria-labelledby="instrLbl"></textarea>
+              </div>
+            </div>
+            <div id="blocksPane" hidden>
+              <div class="palette" id="palette" role="toolbar" aria-label="Command blocks"></div>
+              <ol class="blocklist" id="blockList"></ol>
+            </div>
+
+            <div class="row controls">
+              <button class="btn primary" id="run" type="button" data-i18n="game.run">Run</button>
+              <button class="btn" id="pauseBtn" type="button" disabled data-i18n="game.pause">Pause</button>
+              <button class="btn" id="stepBtn" type="button" data-i18n="game.step">Step</button>
+              <button class="btn" id="backStepBtn" type="button" disabled data-i18n="game.stepBack">Back</button>
+              <button class="btn" id="reset" type="button" data-i18n="game.reset">Reset room</button>
+            </div>
+            <div class="row controls2">
+              <button class="btn ghost small" id="hint" type="button" data-i18n="game.hint">Hint</button>
+              <button class="btn ghost small" id="voiceBtn" type="button" hidden data-i18n="game.voice">Speak</button>
+              <button class="btn ghost small" id="aiToggle" type="button" aria-expanded="false" data-i18n="game.ai">Ask a real AI</button>
+            </div>
+            <p class="hintbox" id="hintBox" hidden></p>
+
+            <div class="aibox" id="aiBox" hidden>
+              <p class="muted small-text" data-i18n="ai.intro">A real language model fills in the gaps that Robot never will. It rewrites your instructions into lines Robot understands, then you can run them.</p>
+              <label class="lbl" for="aiKey" data-i18n="ai.key">Anthropic API key</label>
+              <input id="aiKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-...">
+              <label class="lbl" for="aiModel" data-i18n="ai.model">Model</label>
+              <input id="aiModel" type="text" autocomplete="off" spellcheck="false" value="claude-haiku-5-5">
+              <label class="check"><input id="aiRemember" type="checkbox"> <span data-i18n="ai.remember">Remember the key in this browser</span></label>
+              <p class="muted small-text" data-i18n="ai.privacy">Your key and instructions go only from this browser to api.anthropic.com. Do not use a key you cannot afford to expose on a shared computer.</p>
+              <div class="row"><button class="btn" id="aiAsk" type="button" data-i18n="ai.ask">Ask the AI</button></div>
+              <div id="aiResult" hidden>
+                <p class="lbl" data-i18n="ai.result">The AI suggests</p>
+                <pre class="aipre" id="aiLines"></pre>
+                <div class="row">
+                  <button class="btn small" id="aiUse" type="button" data-i18n="ai.use">Use these lines</button>
+                  <button class="btn small primary" id="aiRun" type="button" data-i18n="ai.run">Use and run</button>
+                </div>
+              </div>
+              <p class="aistatus" id="aiStatus" role="status" hidden></p>
+            </div>
+
+            <div class="win" id="win" hidden>
+              <span class="stars" id="winStars"></span>
+              <p id="winText"></p>
+              <div class="attempts" id="winAttempts" hidden></div>
+              <div class="row">
+                <button class="btn primary" id="nextBtn" type="button" data-i18n="win.next">Next level</button>
+                <button class="btn" id="shareBtn" type="button" hidden data-i18n="win.share">Copy result</button>
+                <button class="btn" id="challengeBtn" type="button" hidden data-i18n="win.challenge">Challenge a friend</button>
+                <button class="btn" id="editorBtn" type="button" hidden data-i18n="win.toEditor">Back to the editor</button>
+              </div>
+              <p class="muted small-text" id="shareNote" role="status" hidden></p>
+            </div>
+          </section>
+
+          <section class="card">
+            <h3 data-i18n="game.log">What Robot did</h3>
+            <ol id="log"></ol>
+          </section>
+
+          <details class="card dict" id="dictBox" open>
+            <summary data-i18n="game.dict">Robot's dictionary</summary>
+            <ul id="dict"></ul>
+            <div id="room"></div>
+            <p class="muted small-text" data-i18n="game.dictNote">Robot understands English commands only, in every language.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= COLLECTION ================= -->
+    <section class="screen" id="screen-gallery" data-screen="gallery" hidden>
+      <h1 class="h1s" data-i18n="gallery.title">Collection</h1>
+      <p class="lead" data-i18n="gallery.sub">Every way Robot has misunderstood you, and every badge you have earned.</p>
+      <div class="tabs wide" role="tablist" aria-label="Collection sections">
+        <button type="button" role="tab" id="gTabBlunders" aria-selected="true"></button>
+        <button type="button" role="tab" id="gTabQuirks" aria-selected="false"></button>
+        <button type="button" role="tab" id="gTabBadges" aria-selected="false"></button>
+      </div>
+      <div class="gallery" id="galleryBody"></div>
+    </section>
+
+    <!-- ================= CREATE ================= -->
+    <section class="screen" id="screen-create" data-screen="create" hidden>
+      <h1 class="h1s" data-i18n="create.title">Build a level</h1>
+      <p class="lead" data-i18n="create.sub">Design a room, set a goal, solve it yourself, then share it with a link or a code.</p>
+      <div class="stage">
+        <section class="card scene" aria-label="Level preview">
+          <canvas id="editCanvas" width="1280" height="940" role="img" data-i18n-aria="create.canvasAria" aria-label="Preview of your level."></canvas>
+          <p class="goalline" id="editGoal"></p>
+        </section>
+        <div class="side">
+          <section class="card">
+            <label class="lbl" for="cTitle" data-i18n="create.name">Level name</label>
+            <input id="cTitle" type="text" maxlength="40" autocomplete="off">
+            <label class="lbl" for="cJob" data-i18n="create.job">Instruction for the player (optional)</label>
+            <input id="cJob" type="text" maxlength="140" autocomplete="off">
+          </section>
+          <section class="card">
+            <h3 data-i18n="create.furniture">Furniture</h3>
+            <div class="checks" id="cStations"></div>
+          </section>
+          <section class="card">
+            <h3 data-i18n="create.items">Items and where they start</h3>
+            <div class="itemrows" id="cItems"></div>
+          </section>
+          <section class="card">
+            <h3 data-i18n="create.goals">Goals (all must be true)</h3>
+            <div class="goalrows" id="cGoals"></div>
+            <p class="formerr" id="cError" role="alert" hidden></p>
+            <div class="row">
+              <button class="btn primary" id="cTest" type="button" data-i18n="create.test">Test my level</button>
+              <button class="btn ghost" id="cClear" type="button" data-i18n="create.clear">Start over</button>
+            </div>
+          </section>
+          <section class="card" id="cShare" hidden>
+            <h3 data-i18n="create.shareTitle">Share your level</h3>
+            <p class="muted small-text" id="cShareNote"></p>
+            <label class="lbl" for="cLink" data-i18n="create.link">Link</label>
+            <div class="copyrow"><input id="cLink" type="text" readonly><button class="btn small" id="cCopyLink" type="button" data-i18n="create.copy">Copy</button></div>
+            <label class="lbl" for="cCode" data-i18n="create.code">Level code</label>
+            <div class="copyrow"><input id="cCode" type="text" readonly><button class="btn small" id="cCopyCode" type="button" data-i18n="create.copy">Copy</button></div>
+          </section>
+          <section class="card">
+            <h3 data-i18n="create.loadTitle">Have a level code?</h3>
+            <div class="copyrow"><input id="cLoad" type="text" autocomplete="off" spellcheck="false" data-i18n-ph="create.loadPh" placeholder="Paste a code"></div>
+            <div class="row">
+              <button class="btn small" id="cLoadPlay" type="button" data-i18n="create.loadPlay">Play it</button>
+              <button class="btn small" id="cLoadEdit" type="button" data-i18n="create.loadEdit">Edit it</button>
+            </div>
+            <p class="formerr" id="cLoadErr" role="alert" hidden></p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <p class="foot" data-i18n="foot">Fewer lines earns more stars. Your progress is saved in this browser.</p>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+
+
+<script src="js/logic.js"></script>
+<script src="js/util.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/render.js"></script>
+<script src="js/blocks.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

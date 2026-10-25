@@ -1,0 +1,10 @@
+{
+  "name": "literal-robot",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A puzzle game where an isometric robot follows your instructions literally.",
+  "scripts": {
+    "test": "node tests/rules.test.js && node tests/i18n.test.js",
+    "start": "npx serve ."
+  }
+}
